@@ -2,4 +2,7 @@ streamlit
 requests
 matplotlib
 pandas
-pandas_ta
+from ta.trend import MACD
+from ta.momentum import RSIIndicator
+from ta.trend import EMAIndicator
+
