@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-import pandas_ta as ta
+from ta.trend import EMAIndicator, MACD
+from ta.momentum import RSIIndicator
 import yfinance as yf
 
 # --- CONFIG ---
@@ -23,14 +24,14 @@ def fetch_data(ticker, interval, lookback):
         return None
 
 def analyze_signals(df):
-    df['EMA21'] = ta.ema(df['Close'], length=21)
-    df['EMA50'] = ta.ema(df['Close'], length=50)
-    df['EMA90'] = ta.ema(df['Close'], length=90)
-    df['EMA180'] = ta.ema(df['Close'], length=180)
-    df['RSI'] = ta.rsi(df['Close'], length=14)
-    macd = ta.macd(df['Close'])
-    df['MACD'] = macd['MACD_12_26_9']
-    df['MACD_Hist'] = macd['MACDh_12_26_9']
+    df['EMA21'] = EMAIndicator(df['Close'], window=21).ema_indicator()
+    df['EMA50'] = EMAIndicator(df['Close'], window=50).ema_indicator()
+    df['EMA90'] = EMAIndicator(df['Close'], window=90).ema_indicator()
+    df['EMA180'] = EMAIndicator(df['Close'], window=180).ema_indicator()
+    df['RSI'] = RSIIndicator(df['Close'], window=14).rsi()
+    macd = MACD(df['Close'])
+    df['MACD'] = macd.macd()
+    df['MACD_Hist'] = macd.macd_diff()
     df.dropna(inplace=True)
     return df
 
