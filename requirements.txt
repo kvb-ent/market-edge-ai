@@ -1,8 +1,6 @@
 streamlit
-requests
-matplotlib
 pandas
-from ta.trend import MACD
-from ta.momentum import RSIIndicator
-from ta.trend import EMAIndicator
+yfinance
+ta
+
 
