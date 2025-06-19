@@ -24,10 +24,11 @@ def fetch_data(ticker, interval, lookback):
         return None
 
 def analyze_signals(df):
-    df['EMA21'] = EMAIndicator(df['Close'], window=21).ema_indicator()
-    df['EMA50'] = EMAIndicator(df['Close'], window=50).ema_indicator()
-    df['EMA90'] = EMAIndicator(df['Close'], window=90).ema_indicator()
-    df['EMA180'] = EMAIndicator(df['Close'], window=180).ema_indicator()
+    close_series = pd.Series(df['Close'].values, index=df.index)
+    df['EMA21'] = EMAIndicator(close_series, window=21).ema_indicator()
+    df['EMA50'] = EMAIndicator(close_series, window=50).ema_indicator()
+    df['EMA90'] = EMAIndicator(close_series, window=90).ema_indicator()
+    df['EMA180'] = EMAIndicator(close_series, window=180).ema_indicator()
     df['RSI'] = RSIIndicator(df['Close'], window=14).rsi()
     macd = MACD(df['Close'])
     df['MACD'] = macd.macd()
