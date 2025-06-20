@@ -30,7 +30,7 @@ def analyze_signals(df):
     df['EMA90'] = EMAIndicator(close_series, window=90).ema_indicator()
     df['EMA180'] = EMAIndicator(close_series, window=180).ema_indicator()
 
-    df['RSI'] = RSIIndicator(df['Close'], window=14).rsi()
+    close_series = df['Close'].squeeze() df[''] = RSIIndicator(close_series, window=14).rsi()
     macd = MACD(df['Close'])
     df['MACD'] = macd.macd()
     df['MACD_Hist'] = macd.macd_diff()
