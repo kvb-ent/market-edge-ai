@@ -41,24 +41,33 @@ def analyze_signals(df):
 def detect_setup(df):
     if df is None or df.empty or len(df) < 2:
         return "⚠️ Not enough data to generate signal"
-    
+
+    required_cols = ['RSI', 'MACD_Hist', 'EMA21', 'EMA50', 'Close']
+    for col in required_cols:
+        if col not in df.columns:
+            return f"⚠️ Missing indicator: {col}"
+
     latest = df.iloc[-1]
     prior = df.iloc[-2]
-    
-    if (
-        latest['RSI'] < 40 and
-        prior['MACD_Hist'] < 0 and latest['MACD_Hist'] > 0 and
-        latest['Close'] > latest['EMA21'] > latest['EMA50']
-    ):
-        return "📈 Bullish Reversal Signal"
-    elif (
-        latest['RSI'] > 60 and
-        prior['MACD_Hist'] > 0 and latest['MACD_Hist'] < 0 and
-        latest['Close'] < latest['EMA21'] < latest['EMA50']
-    ):
-        return "📉 Bearish Reversal Signal"
-    else:
-        return "No clear setup"
+
+    try:
+        if (
+            latest['RSI'] < 40 and
+            prior['MACD_Hist'] < 0 and latest['MACD_Hist'] > 0 and
+            latest['Close'] > latest['EMA21'] > latest['EMA50']
+        ):
+            return "📈 Bullish Reversal Signal"
+        elif (
+            latest['RSI'] > 60 and
+            prior['MACD_Hist'] > 0 and latest['MACD_Hist'] < 0 and
+            latest['Close'] < latest['EMA21'] < latest['EMA50']
+        ):
+            return "📉 Bearish Reversal Signal"
+        else:
+            return "No clear setup"
+    except KeyError:
+        return "⚠️ Missing required data in last candles"
+
 
 
 # --- UI ---
