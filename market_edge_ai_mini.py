@@ -42,33 +42,36 @@ def detect_setup(df):
     if df is None or df.empty or len(df) < 2:
         return "⚠️ Not enough data to generate signal"
 
-    required_cols = ['RSI', 'MACD_Hist', 'EMA21', 'EMA50', 'Close']
-    for col in required_cols:
-        if col not in df.columns:
-            return f"⚠️ Missing indicator: {col}"
-
     latest = df.iloc[-1]
     prior = df.iloc[-2]
 
     try:
+        rsi = latest.get('RSI', None)
+        macd_hist_latest = latest.get('MACD_Hist', None)
+        macd_hist_prior = prior.get('MACD_Hist', None)
+        ema21 = latest.get('EMA21', None)
+        ema50 = latest.get('EMA50', None)
+        close = latest.get('Close', None)
+
+        if None in [rsi, macd_hist_latest, macd_hist_prior, ema21, ema50, close]:
+            return "⚠️ Missing indicator data for signal"
+
         if (
-            latest['RSI'] < 40 and
-            prior['MACD_Hist'] < 0 and latest['MACD_Hist'] > 0 and
-            latest['Close'] > latest['EMA21'] > latest['EMA50']
+            rsi < 40 and
+            macd_hist_prior < 0 and macd_hist_latest > 0 and
+            close > ema21 > ema50
         ):
             return "📈 Bullish Reversal Signal"
         elif (
-            latest['RSI'] > 60 and
-            prior['MACD_Hist'] > 0 and latest['MACD_Hist'] < 0 and
-            latest['Close'] < latest['EMA21'] < latest['EMA50']
+            rsi > 60 and
+            macd_hist_prior > 0 and macd_hist_latest < 0 and
+            close < ema21 < ema50
         ):
             return "📉 Bearish Reversal Signal"
         else:
             return "No clear setup"
-    except KeyError:
-        return "⚠️ Missing required data in last candles"
-
-
+    except Exception as e:
+        return f"⚠️ Error during signal detection: {str(e)}"
 
 # --- UI ---
 st.title("🧠 Market Edge AI - Mini Version")
