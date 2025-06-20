@@ -39,8 +39,12 @@ def analyze_signals(df):
     return df
 
 def detect_setup(df):
+    if df is None or df.empty or len(df) < 2:
+        return "⚠️ Not enough data to generate signal"
+    
     latest = df.iloc[-1]
     prior = df.iloc[-2]
+    
     if (
         latest['RSI'] < 40 and
         prior['MACD_Hist'] < 0 and latest['MACD_Hist'] > 0 and
@@ -55,6 +59,7 @@ def detect_setup(df):
         return "📉 Bearish Reversal Signal"
     else:
         return "No clear setup"
+
 
 # --- UI ---
 st.title("🧠 Market Edge AI - Mini Version")
