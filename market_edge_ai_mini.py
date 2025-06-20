@@ -32,7 +32,7 @@ def analyze_signals(df):
 
     close_series = df['Close'].squeeze() 
     df[''] = RSIIndicator(close_series, window=14).rsi()
-    macd = MACD(df['Close'])
+    macd = MACD(close_series)
     df['MACD'] = macd.macd()
     df['MACD_Hist'] = macd.macd_diff()
     df.dropna(inplace=True)
